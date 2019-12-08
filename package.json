@@ -1,0 +1,10 @@
+{
+  "name": "iridium-mock",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "bladerunner2020 <pivovarov@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^6.7.2"
+  }
+}
