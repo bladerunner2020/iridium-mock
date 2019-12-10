@@ -28,3 +28,6 @@ IR.on('device-send', ({ name, data }) => console.log(`Device ${name} sent: ${dat
 IR.mockCallListener(IR.EVENT_CHANNEL_SET, IR.GetDevice('Kramer'), 'setRoute', '1: 2');
 IR.mockCallListener(IR.EVENT_CHANNEL_SET, IR.GetDevice('Kramer'), 'setVolume', 100);
 ```
+
+# Note
+In the current release just few IR properties are added. Let me know if you need more or PR even better :)
