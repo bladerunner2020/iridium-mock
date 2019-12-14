@@ -4,12 +4,12 @@
 
 ## Installation
 ```bash
-npm install git@github.com:bladerunner2020/iridium-mock.git
+npm install git+ssh://git@github.com:bladerunner2020/iridium-mock.git --save-dev
 ```
 or
 
 ```bash
-yarn add git@github.com:bladerunner2020/iridium-mock.git
+yarn add git+ssh://git@github.com:bladerunner2020/iridium-mock.git -D
 ```
 
 ## Usage
