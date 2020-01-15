@@ -52,6 +52,18 @@ class IridiumMock extends EventEmitter{
 
     }
 
+    RemoveListener(type, item, callback) {
+        var listeners = this._listeners[type];
+        if (typeof listeners === 'undefined') {
+            return; 
+        }
+        for (var i = listeners.length - 1; i >=0;  i-- ) {
+            if (listeners[i].item === item  && listeners[i].callback === callback) {
+                listeners.splice(i, 1);
+            }
+        }
+    }
+
     ClearInterval(timer) {
         clearTimeout(timer);
     }
