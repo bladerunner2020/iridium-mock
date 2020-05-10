@@ -20,6 +20,7 @@ class IridiumMock extends EventEmitter {
     this.mockIsAppStarted = true;
     this.mockCallListener(IR_ENUM.EVENT_START, 0);
     Object.keys(this.mockDevices).forEach((device) => this.mockDevices[device].Connect());
+    return this;
   }
 
   mockAddDevice(name, options) {

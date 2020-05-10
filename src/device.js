@@ -28,7 +28,7 @@ class DeviceMock {
   mockAddFeedback(name, data = []) {
     const id = this.mockFeedbacks.length;
     this.mockFeedbacks.push({ name, id, data });
-    return this.mockFeedbacks[id];
+    return this;
   }
 
   AddEndOfString(mockSeparator) {
