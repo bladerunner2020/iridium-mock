@@ -2,13 +2,10 @@
 const { IridiumMock } = require('..');
 
 const IR = new IridiumMock();
-
 IR.on('ir-log', (msg) => console.log(msg));
 
-const varString = 'Some string';
-const varNumber = 42;
-
-IR.SetVariable('GLobal.String', varString);
-IR.SetVariable('GLobal.Number', varNumber);
-
-IR.Log(IR.GetVariable('GLobal.String'));
+IR.mockAddDevice('SomeDevice', {});
+const device = IR.GetDevice('SomeDevice');
+IR.AddListener(IR.EVENT_ONLINE, device, () => {
+  IR.Log('Device is online');
+});

@@ -7,17 +7,25 @@ class IridiumMock extends EventEmitter {
   constructor() {
     super();
 
-    this.devices = {};
-    this.irListeners = {};
-    this.irVariables = {};
-    this.irTimers = [];
+    this.mockIsAppStarted = false;
+    this.mockDevices = {};
+    this.mockListeners = {};
+    this.mockVariables = {};
+    this.mockTimers = [];
 
     Object.assign(this, IR_ENUM);
   }
 
+  mockAppStart() {
+    this.mockIsAppStarted = true;
+    this.mockCallListener(IR_ENUM.EVENT_START, 0);
+    Object.keys(this.mockDevices).forEach((device) => this.mockDevices[device].Connect());
+  }
+
   mockAddDevice(name, options) {
-    this.devices[name] = new DeviceMock(this, name, options);
-    return this.devices[name];
+    const device = new DeviceMock(this, name, options);
+    this.mockDevices[name] = device;
+    return device;
   }
 
   mockCallListener(/* type, item, values */) {
@@ -26,8 +34,8 @@ class IridiumMock extends EventEmitter {
     const type = args.shift();
     const item = args.shift();
 
-    if (typeof this.irListeners[type] !== 'undefined') {
-      this.irListeners[type].forEach((listener) => {
+    if (typeof this.mockListeners[type] !== 'undefined') {
+      this.mockListeners[type].forEach((listener) => {
         if (listener.item === item && listener.callback) {
           listener.callback.apply(item.context, args);
         }
@@ -36,14 +44,14 @@ class IridiumMock extends EventEmitter {
   }
 
   AddListener(type, item, callback, context) {
-    if (typeof this.irListeners[type] === 'undefined') {
-      this.irListeners[type] = [];
+    if (typeof this.mockListeners[type] === 'undefined') {
+      this.mockListeners[type] = [];
     }
-    this.irListeners[type].push({ item, callback, context });
+    this.mockListeners[type].push({ item, callback, context });
   }
 
   RemoveListener(type, item, callback) {
-    const listeners = this.irListeners[type];
+    const listeners = this.mockListeners[type];
     if (typeof listeners === 'undefined') {
       return;
     }
@@ -55,19 +63,19 @@ class IridiumMock extends EventEmitter {
   }
 
   ClearInterval(timer) {
-    const index = this.irTimers.indexOf(timer);
-    this.irTimers.splice(index, 1);
+    const index = this.mockTimers.indexOf(timer);
+    this.mockTimers.splice(index, 1);
     clearInterval(timer);
   }
 
   ClearTimeout(timer) {
-    const index = this.irTimers.indexOf(timer);
-    this.irTimers.splice(index, 1);
+    const index = this.mockTimers.indexOf(timer);
+    this.mockTimers.splice(index, 1);
     clearTimeout(timer);
   }
 
   GetDevice(name) {
-    return this.devices[name];
+    return this.mockDevices[name];
   }
 
   CreateDevice(type, name, properties) {
@@ -76,16 +84,16 @@ class IridiumMock extends EventEmitter {
 
   GetDevices() {
     const res = [];
-    const keys = Object.keys(this.devices);
+    const keys = Object.keys(this.mockDevices);
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
-      res.push(this.devices[key]);
+      res.push(this.mockDevices[key]);
     }
     return res;
   }
 
   GetVariable(tag) {
-    const res = this.irVariables[tag];
+    const res = this.mockVariables[tag];
     return res ? res.toString() : res;
   }
 
@@ -94,22 +102,22 @@ class IridiumMock extends EventEmitter {
   }
 
   SetVariable(tag, value) {
-    this.irVariables[tag] = value;
+    this.mockVariables[tag] = value;
   }
 
   SetInterval(interval, callback) {
     const timer = setInterval(callback, interval);
-    this.irTimers.push(timer);
+    this.mockTimers.push(timer);
     return timer;
   }
 
   SetTimeout(timeout, callback) {
     const timer = setTimeout(() => {
-      const index = this.irTimers.indexOf(timer);
-      this.irTimers.splice(index, 1);
+      const index = this.mockTimers.indexOf(timer);
+      this.mockTimers.splice(index, 1);
       callback();
     }, timeout);
-    this.irTimers.push(timer);
+    this.mockTimers.push(timer);
     return timer;
   }
 }

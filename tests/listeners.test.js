@@ -8,7 +8,7 @@ describe('listers test', () => {
 
     IR.AddListener(IR.EVENT_CHANNEL_SET, device, mock);
 
-    expect(IR.irListeners[IR.EVENT_CHANNEL_SET]).toBeDefined();
+    expect(IR.mockListeners[IR.EVENT_CHANNEL_SET]).toBeDefined();
     IR.mockCallListener(IR.EVENT_CHANNEL_SET, device, 'channel1', 'value1');
     expect(mock).toBeCalledWith('channel1', 'value1');
   });
@@ -20,7 +20,7 @@ describe('listers test', () => {
 
     IR.AddListener(IR.EVENT_CHANNEL_SET, device, mock);
 
-    expect(IR.irListeners[IR.EVENT_CHANNEL_SET]).toBeDefined();
+    expect(IR.mockListeners[IR.EVENT_CHANNEL_SET]).toBeDefined();
     IR.RemoveListener(IR.EVENT_CHANNEL_SET, device, mock);
 
     IR.mockCallListener(IR.EVENT_CHANNEL_SET, device, 'channel1', 'value1');

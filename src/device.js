@@ -2,80 +2,88 @@ const IR_ENUM = require('./enum');
 
 class DeviceMock {
   constructor(ir, name, {
-    Type = IR_ENUM.DEVICE_CUSTOM_TCP, Host, Port, ...compatibility
+    Type = IR_ENUM.DEVICE_CUSTOM_TCP,
+    Host,
+    Port = 8080,
+    MaxClients = 10,
+    LogLevel = 7,
+    SendMode = IR_ENUM.ALWAYS_mockConnected,
+    ScriptMode = IR_ENUM.DIRECT_AND_SCRIPT
   } = {}) {
     this.Name = name;
-    this.Type = Type || compatibility.type;
-    this.Host = Host || compatibility.host;
-    this.Port = Port || compatibility.port;
+    this.Type = Type;
+    this.Host = Host;
+    this.Port = Port;
+    this.MaxClients = MaxClients;
+    this.LogLevel = LogLevel;
+    this.SendMode = SendMode;
+    this.ScriptMode = ScriptMode;
 
-    this.ir = ir;
-    this.feedbacks = [];
-    this.connected = false;
-    this.separator = null;
-
-    if (Host) setTimeout(() => this.Connect(), 10);
+    this.mockIr = ir;
+    this.mockFeedbacks = [];
+    this.mockConnected = false;
+    this.mockSeparator = null;
   }
 
   mockAddFeedback(name, data = []) {
-    const id = this.feedbacks.length;
-    this.feedbacks.push({ name, id, data });
-    return this.feedbacks[id];
+    const id = this.mockFeedbacks.length;
+    this.mockFeedbacks.push({ name, id, data });
+    return this.mockFeedbacks[id];
   }
 
-  AddEndOfString(separator) {
-    this.separator = separator;
+  AddEndOfString(mockSeparator) {
+    this.mockSeparator = mockSeparator;
   }
 
   Connect() {
-    if (!this.connected) {
-      this.connected = true;
-      this.ir.mockCallListener(this.ir.EVENT_ONLINE, this);
+    if (!this.mockConnected) {
+      this.mockConnected = true;
+      this.mockIr.mockCallListener(this.mockIr.EVENT_ONLINE, this);
     }
   }
 
   Disconnect() {
-    if (this.connected) {
-      this.connected = false;
-      this.ir.mockCallListener(this.ir.EVENT_OFFLINE, this);
+    if (this.mockConnected) {
+      this.mockConnected = false;
+      this.mockIr.mockCallListener(this.mockIr.EVENT_OFFLINE, this);
     }
   }
 
   GetFeedback(feedback) {
     if (this.GetFeedbackAtName(feedback)) {
-      return this.ir.GetVariable(`Drivers.${this.Name}.${feedback}`);
+      return this.mockIr.GetVariable(`Drivers.${this.Name}.${feedback}`);
     }
     return undefined;
   }
 
   GetFeedbackAtPos(id) {
-    return this.feedbacks[id];
+    return this.mockFeedbacks[id];
   }
 
   GetFeedbackAtName(name) {
-    for (let i = 0; i < this.feedbacks.length; i++) {
-      if (this.feedbacks[i].name === name) {
-        return this.feedbacks[i];
+    for (let i = 0; i < this.mockFeedbacks.length; i++) {
+      if (this.mockFeedbacks[i].name === name) {
+        return this.mockFeedbacks[i];
       }
     }
     return undefined;
   }
 
   GetFeedbacksCount() {
-    return Object.keys(this.feedbacks).length;
+    return Object.keys(this.mockFeedbacks).length;
   }
 
   Send(data) {
-    this.ir.emit('device-send', { name: this.Name, data });
+    if (this.mockConnected) this.mockIr.emit('device-send', { name: this.Name, data });
   }
 
   Set(command, value) {
-    this.ir.emit('device-set', { name: this.Name, command, value });
+    this.mockIr.emit('device-set', { name: this.Name, command, value });
   }
 
   SetFeedback(feedback, value) {
     if (this.GetFeedbackAtName(feedback)) {
-      this.ir.SetVariable(`Drivers.${this.Name}.${feedback}`, value);
+      this.mockIr.SetVariable(`Drivers.${this.Name}.${feedback}`, value);
     }
   }
 
