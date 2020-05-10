@@ -47,4 +47,11 @@ describe('devices tests', () => {
     IR.mockAppStart();
     expect(device.mockConnected).toBe(true);
   });
+
+  it('Should not connected before EVENT_START', () => {
+    const IR = new IridiumMock();
+    const device = IR.CreateDevice(IR.DEVICE_CUSTOM_TCP, 'SomeDevice', { Host: '192.168.2.2', Port: 4242 });
+    device.Connect();
+    expect(device.mockConnected).toBe(false);
+  });
 });

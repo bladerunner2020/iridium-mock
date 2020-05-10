@@ -36,7 +36,7 @@ class DeviceMock {
   }
 
   Connect() {
-    if (!this.mockConnected) {
+    if (!this.mockConnected && this.mockIr.mockIsAppStarted) {
       this.mockConnected = true;
       this.mockIr.mockCallListener(this.mockIr.EVENT_ONLINE, this);
     }
