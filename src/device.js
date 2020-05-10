@@ -31,6 +31,12 @@ class DeviceMock {
     return this;
   }
 
+  mockDestroy() {
+    this.mockFeedbacks = [];
+    this.mockConnected = false;
+    this.mockSeparator = null;
+  }
+
   AddEndOfString(mockSeparator) {
     this.mockSeparator = mockSeparator;
   }

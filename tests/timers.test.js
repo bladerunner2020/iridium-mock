@@ -36,10 +36,10 @@ describe('timers test', () => {
     const IR = new IridiumMock();
 
     const timer = IR.SetInterval(1000, mock);
-    expect(IR.mockTimers.indexOf(timer)).not.toBe(-1);
+    expect(IR.mockIntervals.indexOf(timer)).not.toBe(-1);
     clock.tick(10000);
     expect(mock).toBeCalledTimes(10);
-    expect(IR.mockTimers.indexOf(timer)).not.toBe(-1);
+    expect(IR.mockIntervals.indexOf(timer)).not.toBe(-1);
   });
 
   it('IR.ClearTimeout', () => {
@@ -64,13 +64,30 @@ describe('timers test', () => {
     const IR = new IridiumMock();
 
     const timer = IR.SetInterval(1000, mock);
-    expect(IR.mockTimers.indexOf(timer)).not.toBe(-1);
+    expect(IR.mockIntervals.indexOf(timer)).not.toBe(-1);
     clock.tick(500);
     expect(mock).not.toBeCalled();
-    expect(IR.mockTimers.indexOf(timer)).not.toBe(-1);
+    expect(IR.mockIntervals.indexOf(timer)).not.toBe(-1);
     IR.ClearInterval(timer);
     clock.tick(1000);
     expect(mock).not.toBeCalled();
-    expect(IR.mockTimers.indexOf(timer)).toBe(-1);
+    expect(IR.mockIntervals.indexOf(timer)).toBe(-1);
+  });
+
+  it('should remove timer if reset', () => {
+    clock = useFakeTimers();
+    const mock1 = jest.fn();
+    const mock2 = jest.fn();
+    const IR = new IridiumMock();
+    IR.SetTimeout(10000, mock1);
+    IR.SetInterval(1000, mock2);
+    expect(IR.mockTimers).toHaveLength(1);
+    expect(IR.mockIntervals).toHaveLength(1);
+    IR.mockResetIr();
+    expect(IR.mockTimers).toHaveLength(0);
+    expect(IR.mockIntervals).toHaveLength(0);
+    clock.tick(200000);
+    expect(mock1).not.toBeCalled();
+    expect(mock2).not.toBeCalled();
   });
 });

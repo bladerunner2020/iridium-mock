@@ -12,6 +12,7 @@ class IridiumMock extends EventEmitter {
     this.mockListeners = {};
     this.mockVariables = {};
     this.mockTimers = [];
+    this.mockIntervals = [];
 
     Object.assign(this, IR_ENUM);
   }
@@ -38,10 +39,23 @@ class IridiumMock extends EventEmitter {
     if (typeof this.mockListeners[type] !== 'undefined') {
       this.mockListeners[type].forEach((listener) => {
         if (listener.item === item && listener.callback) {
-          listener.callback.apply(item.context, args);
+          listener.callback.apply(listener.context, args);
         }
       });
     }
+  }
+
+  mockResetIr() {
+    this.mockTimers.forEach((timer) => clearTimeout(timer));
+    this.mockIntervals.forEach((timer) => clearInterval(timer));
+    Object.keys(this.mockDevices).forEach((deviceName) => this.mockDevices[deviceName].mockDestroy());
+
+    this.mockIsAppStarted = false;
+    this.mockDevices = {};
+    this.mockListeners = {};
+    this.mockVariables = {};
+    this.mockTimers = [];
+    this.mockIntervals = [];
   }
 
   AddListener(type, item, callback, context) {
@@ -64,8 +78,8 @@ class IridiumMock extends EventEmitter {
   }
 
   ClearInterval(timer) {
-    const index = this.mockTimers.indexOf(timer);
-    this.mockTimers.splice(index, 1);
+    const index = this.mockIntervals.indexOf(timer);
+    this.mockIntervals.splice(index, 1);
     clearInterval(timer);
   }
 
@@ -108,7 +122,7 @@ class IridiumMock extends EventEmitter {
 
   SetInterval(interval, callback) {
     const timer = setInterval(callback, interval);
-    this.mockTimers.push(timer);
+    this.mockIntervals.push(timer);
     return timer;
   }
 
