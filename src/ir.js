@@ -56,6 +56,8 @@ class IridiumMock extends EventEmitter {
     this.mockVariables = {};
     this.mockTimers = [];
     this.mockIntervals = [];
+
+    this.removeAllListeners();
   }
 
   AddListener(type, item, callback, context) {
