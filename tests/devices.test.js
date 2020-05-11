@@ -1,9 +1,15 @@
 const { IridiumMock } = require('..');
 
+const IR = new IridiumMock();
+
 describe('devices tests', () => {
+  afterEach(() => {
+    IR.mockResetIr();
+  });
+
   it('Should add device to tree and call EVENT_ONLINE', () => {
     const mock = jest.fn();
-    const IR = new IridiumMock();
+    IR.mockAddHost('192.168.2.2');
     IR.mockAddDevice('SomeDevice', { Host: '192.168.2.2', Port: 4242 });
     const device = IR.GetDevice('SomeDevice');
     IR.AddListener(IR.EVENT_ONLINE, device, mock);
@@ -20,7 +26,7 @@ describe('devices tests', () => {
   });
 
   it('Should create device', () => {
-    const IR = new IridiumMock();
+    IR.mockAddHost('192.168.2.2');
     const device = IR.CreateDevice(IR.DEVICE_CUSTOM_TCP, 'SomeDevice', { Host: '192.168.2.2', Port: 4242 });
     expect(device).toBeDefined();
     expect(device.Name).toBe('SomeDevice');
@@ -31,7 +37,7 @@ describe('devices tests', () => {
   });
 
   it('Should connect manually if device is created after EVENT_START', () => {
-    const IR = new IridiumMock();
+    IR.mockAddHost('192.168.2.2');
     IR.mockAppStart();
     const device = IR.CreateDevice(IR.DEVICE_CUSTOM_TCP, 'SomeDevice', { Host: '192.168.2.2', Port: 4242 });
     IR.AddListener(IR.EVENT_START, 0, () => {
@@ -42,15 +48,25 @@ describe('devices tests', () => {
   });
 
   it('Should be connected if device is created before EVENT_START', () => {
-    const IR = new IridiumMock();
+    IR.mockAddHost('192.168.2.2');
     const device = IR.CreateDevice(IR.DEVICE_CUSTOM_TCP, 'SomeDevice', { Host: '192.168.2.2', Port: 4242 });
     IR.mockAppStart();
     expect(device.mockConnected).toBe(true);
   });
 
   it('Should not connected before EVENT_START', () => {
-    const IR = new IridiumMock();
+    IR.mockAddHost('192.168.2.2');
     const device = IR.CreateDevice(IR.DEVICE_CUSTOM_TCP, 'SomeDevice', { Host: '192.168.2.2', Port: 4242 });
+    device.Connect();
+    expect(device.mockConnected).toBe(false);
+    IR.mockAppStart();
+    expect(device.mockConnected).toBe(true);
+  });
+
+  it('Should not connected if host is not added to valid hosts', () => {
+    const device = IR.CreateDevice(IR.DEVICE_CUSTOM_TCP, 'SomeDevice', { Host: '192.168.2.2', Port: 4242 });
+    IR.mockAppStart();
+    expect(device.mockConnected).toBe(false);
     device.Connect();
     expect(device.mockConnected).toBe(false);
   });

@@ -16,11 +16,13 @@ describe('general test', () => {
     const IR = new IridiumMock();
     IR.mockAppStart();
     expect(IR.mockIsAppStarted).toBe(true);
+    IR.mockAddHost('192.168.2.2');
     IR.SetVariable('Global.Var', 'some text');
     IR.mockAddDevice('some device');
 
     IR.mockResetIr();
     expect(IR.mockIsAppStarted).toBe(false);
+    expect(IR.mockValidHosts).toHaveLength(0);
     expect(Object.keys(IR.mockVariables)).toHaveLength(0);
     expect(Object.keys(IR.mockDevices)).toHaveLength(0);
   });

@@ -13,6 +13,7 @@ class IridiumMock extends EventEmitter {
     this.mockVariables = {};
     this.mockTimers = [];
     this.mockIntervals = [];
+    this.mockValidHosts = [];
 
     Object.assign(this, IR_ENUM);
   }
@@ -28,6 +29,11 @@ class IridiumMock extends EventEmitter {
     const device = new DeviceMock(this, name, options);
     this.mockDevices[name] = device;
     return device;
+  }
+
+  mockAddHost(host) {
+    this.mockValidHosts.push(host);
+    return this;
   }
 
   mockCallListener(/* type, item, values */) {
@@ -56,6 +62,7 @@ class IridiumMock extends EventEmitter {
     this.mockVariables = {};
     this.mockTimers = [];
     this.mockIntervals = [];
+    this.mockValidHosts = [];
 
     this.removeAllListeners();
   }

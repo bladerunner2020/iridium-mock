@@ -42,7 +42,11 @@ class DeviceMock {
   }
 
   Connect() {
-    if (!this.mockConnected && this.mockIr.mockIsAppStarted) {
+    const canConnect = !this.mockConnected
+      && this.mockIr.mockIsAppStarted
+      && this.Host
+      && this.mockIr.mockValidHosts.indexOf(this.Host) !== -1;
+    if (canConnect) {
       this.mockConnected = true;
       this.mockIr.mockCallListener(this.mockIr.EVENT_ONLINE, this);
     }
