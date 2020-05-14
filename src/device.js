@@ -44,7 +44,7 @@ class DeviceMock {
   Connect() {
     const canConnect = !this.mockConnected
       && this.mockIr.mockIsAppStarted
-      && this.Host
+      && !!this.Host
       && this.mockIr.mockValidHosts.indexOf(this.Host) !== -1;
     if (canConnect) {
       this.mockConnected = true;
@@ -98,12 +98,8 @@ class DeviceMock {
   }
 
   SetParameters({ Host, Port }) {
-    if (typeof Host !== 'undefined') {
-      this.Host = Host;
-    }
-    if (typeof Port !== 'undefined') {
-      this.Port = Port;
-    }
+    if (typeof Host !== 'undefined') this.Host = Host;
+    if (typeof Port !== 'undefined') this.Port = Port;
     return true;
   }
 }

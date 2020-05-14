@@ -8,6 +8,7 @@ extends:
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
+  IR: writable
 parserOptions:
   ecmaVersion: 2018
 rules:
