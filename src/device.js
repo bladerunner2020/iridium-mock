@@ -7,7 +7,7 @@ class DeviceMock {
     Port = 8080,
     MaxClients = 10,
     LogLevel = 7,
-    SendMode = IR_ENUM.ALWAYS_mockConnected,
+    SendMode = IR_ENUM.ALWAYS_CONNECTED,
     ScriptMode = IR_ENUM.DIRECT_AND_SCRIPT
   } = {}) {
     this.Name = name;
