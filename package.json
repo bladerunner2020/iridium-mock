@@ -1,6 +1,6 @@
 {
   "name": "iridium-mock",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "main": "index.js",
   "author": "bladerunner2020 <pivovarov@gmail.com>",
   "license": "MIT",
