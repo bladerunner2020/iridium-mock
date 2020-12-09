@@ -21,6 +21,7 @@ class DeviceMock {
 
     this.mockIr = ir;
     this.mockFeedbacks = [];
+    this.mockCommands = [];
     this.mockConnected = false;
     this.mockSeparator = null;
   }
@@ -31,8 +32,15 @@ class DeviceMock {
     return this;
   }
 
+  mockAddCommand(name, data = []) {
+    const id = this.mockFeedbacks.length;
+    this.mockCommands.push({ name, id, data });
+    return this;
+  }
+
   mockDestroy() {
     this.mockFeedbacks = [];
+    this.mockCommands = [];
     this.mockConnected = false;
     this.mockSeparator = null;
   }
@@ -80,8 +88,26 @@ class DeviceMock {
   }
 
   GetFeedbacksCount() {
-    return Object.keys(this.mockFeedbacks).length;
+    return this.mockFeedbacks.length;
   }
+
+  GetCommandsCount() {
+    return this.mockCommands.length;
+  }
+
+  GetCommandAtPos(id) {
+    return this.mockCommands[id];
+  }
+
+  GetCommandAtName(name) {
+    for (let i = 0; i < this.mockCommands.length; i++) {
+      if (this.mockCommands[i].name === name) {
+        return this.mockCommands[i];
+      }
+    }
+    return undefined;
+  }
+
 
   Send(data) {
     if (this.mockConnected) this.mockIr.emit('device-send', { name: this.Name, data });
